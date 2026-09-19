@@ -181,7 +181,7 @@ onUnmounted(() => {
 
     <ExcludeModal
       :visible="excludeModalVisible"
-      :bar-title="currentBar?.iconLabel || currentBar?.title || 'Explorer'"
+      :bar-title="currentBar?.name || 'Explorer'"
       :tab="excludeModalTab"
       @close="excludeModalVisible = false"
       @save="onSaveExclude"

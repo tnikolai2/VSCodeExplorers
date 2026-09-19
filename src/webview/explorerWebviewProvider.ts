@@ -218,7 +218,7 @@ export class ExplorerWebviewProvider implements vscode.WebviewViewProvider {
     if (!bar) return;
 
     const activeTab = this.getActiveTab();
-    this._view.title = bar.iconLabel || bar.title;
+    this._view.title = bar.name;
     this._view.description = activeTab ? `[${activeTab.title}]` : '';
 
     if (this.visible) {

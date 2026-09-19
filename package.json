@@ -2,7 +2,7 @@
   "name": "vscode-custom-explorers",
   "displayName": "Custom Explorers",
   "description": "Multiple independent file explorers in Activity Bar with dynamic tabs, project filtering, and folder management",
-  "version": "0.9.9",
+  "version": "0.9.10",
   "license": "Apache-2.0",
   "publisher": "tnikolai2",
   "repository": {

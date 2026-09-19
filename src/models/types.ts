@@ -22,9 +22,8 @@ export interface TabConfig {
 export interface BarConfig {
   id: string;              // e.g. "bar-1" .. "bar-10"
   slotIndex: number;       // 1 .. 10
-  title: string;           // Display name for this explorer (e.g. "Frontend", "Backend")
+  name: string;            // Name and icon label (1-3 chars, e.g. "FE", "1")
   enabled: boolean;        // Whether this slot is actively in use
-  iconLabel: string;       // Characters drawn on icon (1-3 chars, e.g. "FE", "1")
   activeTabId?: string;    // Currently active tab ID
   tabs: TabConfig[];
 }

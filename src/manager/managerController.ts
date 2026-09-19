@@ -71,7 +71,7 @@ export class ManagerController {
       const state = this.storageService.getState();
       const slots = state.bars.map((bar) => ({
         slotIndex: bar.slotIndex,
-        name: bar.enabled ? (bar.iconLabel || bar.title) : '',
+        name: bar.enabled ? bar.name : '',
         tabsCount: bar.tabs?.length || 0
       }));
 
@@ -91,17 +91,17 @@ export class ManagerController {
   }): Promise<void> {
     try {
       const currentState = this.storageService.getState();
-      const oldIconLabels = new Map<number, string>();
+      const oldNames = new Map<number, string>();
       for (const b of currentState.bars) {
-        oldIconLabels.set(b.slotIndex, b.iconLabel);
+        oldNames.set(b.slotIndex, b.name);
       }
 
       await this.storageService.saveManagerSettings(message.filterByWorkspace, message.slots);
 
       for (const s of message.slots) {
-        const oldLabel = oldIconLabels.get(s.slotIndex);
+        const oldName = oldNames.get(s.slotIndex);
         const cleanLabel = (s.name || '').trim().slice(0, 3).toUpperCase() || String(s.slotIndex);
-        if (oldLabel !== cleanLabel) {
+        if (oldName !== cleanLabel) {
           await IconGenerator.saveSlotIcon(this.context.extensionPath, s.slotIndex, cleanLabel);
         }
       }

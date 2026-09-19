@@ -22,9 +22,8 @@ export interface TabConfig {
 export interface BarConfig {
   id: string;
   slotIndex: number;
-  title: string;
+  name: string;
   enabled: boolean;
-  iconLabel: string;
   activeTabId?: string;
   tabs: TabConfig[];
 }

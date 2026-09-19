@@ -154,9 +154,8 @@ const visibilityService = new VisibilityService(mockContext, mockStorage);
 const disabledBar: BarConfig = {
   id: 'bar-2',
   slotIndex: 2,
-  title: 'Disabled Bar',
+  name: '2',
   enabled: false,
-  iconLabel: '2',
   tabs: []
 };
 assert.strictEqual(visibilityService.isBarVisible(disabledBar, mockWorkspaceFolders), false);
@@ -164,9 +163,8 @@ assert.strictEqual(visibilityService.isBarVisible(disabledBar, mockWorkspaceFold
 const emptyBar: BarConfig = {
   id: 'bar-1',
   slotIndex: 1,
-  title: 'Empty Bar',
+  name: '1',
   enabled: true,
-  iconLabel: '1',
   tabs: []
 };
 assert.strictEqual(visibilityService.isBarVisible(emptyBar, mockWorkspaceFolders), true, 'Empty enabled bar must be visible');
@@ -174,9 +172,8 @@ assert.strictEqual(visibilityService.isBarVisible(emptyBar, mockWorkspaceFolders
 const matchingBar: BarConfig = {
   id: 'bar-1',
   slotIndex: 1,
-  title: 'Frontend Bar',
+  name: 'FE',
   enabled: true,
-  iconLabel: 'FE',
   tabs: [
     {
       id: 't1',
@@ -190,9 +187,8 @@ assert.strictEqual(visibilityService.isBarVisible(matchingBar, mockWorkspaceFold
 const otherProjectBar: BarConfig = {
   id: 'bar-3',
   slotIndex: 3,
-  title: 'Other Project Bar',
+  name: '3',
   enabled: true,
-  iconLabel: '3',
   tabs: [
     {
       id: 't1',

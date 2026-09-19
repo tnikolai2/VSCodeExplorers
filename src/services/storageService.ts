@@ -21,6 +21,11 @@ export class StorageService {
           raw.filterByWorkspace = false;
         }
         for (const b of raw.bars) {
+          if (!b.name) {
+            b.name = (b as any).iconLabel || (b as any).title || String(b.slotIndex);
+          }
+          delete (b as any).title;
+          delete (b as any).iconLabel;
           if (!b.tabs) b.tabs = [];
           for (let idx = 0; idx < b.tabs.length; idx++) {
             const t = b.tabs[idx];
@@ -50,9 +55,8 @@ export class StorageService {
       bars.push({
         id: `bar-${i}`,
         slotIndex: i,
-        title: `Explorer ${i}`,
+        name: String(i),
         enabled: i === 1, // First explorer enabled by default
-        iconLabel: String(i),
         activeTabId: undefined,
         tabs: []
       });
@@ -101,15 +105,14 @@ export class StorageService {
   /**
    * Finds the first available disabled slot and enables it.
    */
-  public async addBar(title?: string, iconLabel?: string): Promise<BarConfig | undefined> {
+  public async addBar(name?: string): Promise<BarConfig | undefined> {
     const slot = this._state.bars.find(b => !b.enabled);
     if (!slot) {
       return undefined; // All 10 slots used
     }
 
     slot.enabled = true;
-    slot.title = title || `Explorer ${slot.slotIndex}`;
-    slot.iconLabel = iconLabel || String(slot.slotIndex);
+    slot.name = (name || '').trim().slice(0, 3).toUpperCase() || String(slot.slotIndex);
     slot.tabs = [];
     slot.activeTabId = undefined;
 
@@ -125,8 +128,7 @@ export class StorageService {
     if (!bar) return;
 
     bar.enabled = false;
-    bar.title = `Explorer ${slotIndex}`;
-    bar.iconLabel = String(slotIndex);
+    bar.name = String(slotIndex);
     bar.tabs = [];
     bar.activeTabId = undefined;
 
@@ -269,12 +271,10 @@ export class StorageService {
         const trimmed = (u.name || '').trim().slice(0, 3).toUpperCase();
         if (trimmed) {
           bar.enabled = true;
-          bar.title = trimmed;
-          bar.iconLabel = trimmed;
+          bar.name = trimmed;
         } else {
           bar.enabled = false;
-          bar.title = `Explorer ${u.slotIndex}`;
-          bar.iconLabel = String(u.slotIndex);
+          bar.name = String(u.slotIndex);
         }
       }
     }
@@ -316,7 +316,7 @@ export class StorageService {
         if (!tab.folders || tab.folders.length === 0) {
           emptyTabs.push({
             slotIndex: bar.slotIndex,
-            barTitle: bar.title,
+            barTitle: bar.name,
             tabId: tab.id,
             tabTitle: tab.title
           });

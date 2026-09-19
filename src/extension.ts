@@ -21,8 +21,7 @@ export async function activate(context: vscode.ExtensionContext) {
     // Regenerate icons for any enabled bars to apply latest SVG design
     for (const b of storageService.getState().bars) {
       if (b.enabled) {
-        b.iconLabel = IconGenerator.extractIconLabel(b.title);
-        await IconGenerator.saveSlotIcon(context.extensionPath, b.slotIndex, b.iconLabel);
+        await IconGenerator.saveSlotIcon(context.extensionPath, b.slotIndex, b.name);
       }
     }
 
