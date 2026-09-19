@@ -1,0 +1,15 @@
+.vscode/**
+.gitignore
+src/**
+test/**
+scratch/**
+vite.config.mts
+tsconfig.json
+**/*.map
+*.log
+scripts/**
+*.vsix
+*.zip
+node_modules/**
+*.py
+*.txt

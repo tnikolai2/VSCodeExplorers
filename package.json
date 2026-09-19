@@ -1,0 +1,230 @@
+{
+  "name": "vscode-custom-explorers",
+  "displayName": "Custom Explorers",
+  "description": "Multiple independent file explorers in Activity Bar with dynamic tabs, project filtering, and folder management",
+  "version": "0.9.0",
+  "license": "Apache-2.0",
+  "publisher": "tnikolai2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tnikolai2/VSCodeExplorers.git"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "custom-explorer-bar-1",
+          "title": "Explorer 1",
+          "icon": "resources/icons/explorer-1.svg"
+        },
+        {
+          "id": "custom-explorer-bar-2",
+          "title": "Explorer 2",
+          "icon": "resources/icons/explorer-2.svg"
+        },
+        {
+          "id": "custom-explorer-bar-3",
+          "title": "Explorer 3",
+          "icon": "resources/icons/explorer-3.svg"
+        },
+        {
+          "id": "custom-explorer-bar-4",
+          "title": "Explorer 4",
+          "icon": "resources/icons/explorer-4.svg"
+        },
+        {
+          "id": "custom-explorer-bar-5",
+          "title": "Explorer 5",
+          "icon": "resources/icons/explorer-5.svg"
+        },
+        {
+          "id": "custom-explorer-bar-6",
+          "title": "Explorer 6",
+          "icon": "resources/icons/explorer-6.svg"
+        },
+        {
+          "id": "custom-explorer-bar-7",
+          "title": "Explorer 7",
+          "icon": "resources/icons/explorer-7.svg"
+        },
+        {
+          "id": "custom-explorer-bar-8",
+          "title": "Explorer 8",
+          "icon": "resources/icons/explorer-8.svg"
+        },
+        {
+          "id": "custom-explorer-bar-9",
+          "title": "Explorer 9",
+          "icon": "resources/icons/explorer-9.svg"
+        },
+        {
+          "id": "custom-explorer-bar-10",
+          "title": "Explorer 10",
+          "icon": "resources/icons/explorer-10.svg"
+        }
+      ]
+    },
+    "views": {
+      "custom-explorer-bar-1": [
+        {
+          "type": "webview",
+          "id": "custom-explorer-view-1",
+          "name": "",
+          "icon": "resources/icons/explorer-1.svg",
+          "when": "customExplorer.bar1.visible"
+        }
+      ],
+      "custom-explorer-bar-2": [
+        {
+          "type": "webview",
+          "id": "custom-explorer-view-2",
+          "name": "",
+          "icon": "resources/icons/explorer-2.svg",
+          "when": "customExplorer.bar2.visible"
+        }
+      ],
+      "custom-explorer-bar-3": [
+        {
+          "type": "webview",
+          "id": "custom-explorer-view-3",
+          "name": "",
+          "icon": "resources/icons/explorer-3.svg",
+          "when": "customExplorer.bar3.visible"
+        }
+      ],
+      "custom-explorer-bar-4": [
+        {
+          "type": "webview",
+          "id": "custom-explorer-view-4",
+          "name": "",
+          "icon": "resources/icons/explorer-4.svg",
+          "when": "customExplorer.bar4.visible"
+        }
+      ],
+      "custom-explorer-bar-5": [
+        {
+          "type": "webview",
+          "id": "custom-explorer-view-5",
+          "name": "",
+          "icon": "resources/icons/explorer-5.svg",
+          "when": "customExplorer.bar5.visible"
+        }
+      ],
+      "custom-explorer-bar-6": [
+        {
+          "type": "webview",
+          "id": "custom-explorer-view-6",
+          "name": "",
+          "icon": "resources/icons/explorer-6.svg",
+          "when": "customExplorer.bar6.visible"
+        }
+      ],
+      "custom-explorer-bar-7": [
+        {
+          "type": "webview",
+          "id": "custom-explorer-view-7",
+          "name": "",
+          "icon": "resources/icons/explorer-7.svg",
+          "when": "customExplorer.bar7.visible"
+        }
+      ],
+      "custom-explorer-bar-8": [
+        {
+          "type": "webview",
+          "id": "custom-explorer-view-8",
+          "name": "",
+          "icon": "resources/icons/explorer-8.svg",
+          "when": "customExplorer.bar8.visible"
+        }
+      ],
+      "custom-explorer-bar-9": [
+        {
+          "type": "webview",
+          "id": "custom-explorer-view-9",
+          "name": "",
+          "icon": "resources/icons/explorer-9.svg",
+          "when": "customExplorer.bar9.visible"
+        }
+      ],
+      "custom-explorer-bar-10": [
+        {
+          "type": "webview",
+          "id": "custom-explorer-view-10",
+          "name": "",
+          "icon": "resources/icons/explorer-10.svg",
+          "when": "customExplorer.bar10.visible"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "customExplorer.manage",
+        "title": "Manage Activity Bars",
+        "category": "Custom Explorers",
+        "icon": "$(layers)"
+      },
+      {
+        "command": "customExplorer.refresh",
+        "title": "Refresh",
+        "category": "Custom Explorers",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "customExplorer.diagnostics",
+        "title": "Storage & Performance Diagnostics",
+        "category": "Custom Explorers",
+        "icon": "$(graph)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "customExplorer.refresh",
+          "when": "view =~ /^custom-explorer-view-/",
+          "group": "navigation@1"
+        },
+        {
+          "command": "customExplorer.manage",
+          "when": "view =~ /^custom-explorer-view-/",
+          "group": "navigation@2"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build:prod",
+    "build:webview": "vite build",
+    "build:ext": "tsc -p ./",
+    "bundle:ext": "node -e \"fs.rmSync('out', {recursive: true, force: true})\" && esbuild src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node --minify",
+    "compile": "npm run build:webview && npm run build:ext",
+    "build:prod": "node scripts/initIcons.js && npm run build:webview && npm run bundle:ext",
+    "package": "npx @vscode/vsce package --no-yarn",
+    "watch:webview": "vite build --watch",
+    "watch:ext": "tsc -watch -p ./",
+    "watch": "npm run build:webview && tsc -watch -p ./",
+    "test": "npx ts-node test/verify.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/picomatch": "^4.0.3",
+    "@types/vscode": "^1.85.0",
+    "@vitejs/plugin-vue": "^6.0.9",
+    "@vscode/vsce": "^4.0.0",
+    "esbuild": "^0.28.2",
+    "picomatch": "^4.0.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3",
+    "vite": "^8.3.0",
+    "vue": "^3.6.0-rc.9"
+  }
+}

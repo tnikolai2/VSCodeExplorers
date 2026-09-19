@@ -1,0 +1,10 @@
+node_modules/
+.vscode-test/
+out/
+dist/
+*.vsix
+.DS_Store
+/*.zip
+/*.rar
+/*.txt
+resources/icons/
