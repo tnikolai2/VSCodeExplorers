@@ -102,7 +102,11 @@ export class ManagerController {
         const oldName = oldNames.get(s.slotIndex);
         const cleanLabel = (s.name || '').trim().slice(0, 3).toUpperCase() || String(s.slotIndex);
         if (oldName !== cleanLabel) {
-          await IconGenerator.saveSlotIcon(this.context.extensionPath, s.slotIndex, cleanLabel);
+          try {
+            await IconGenerator.saveSlotIcon(this.context.extensionPath, s.slotIndex, cleanLabel);
+          } catch (iconErr) {
+            console.warn(`[Custom Explorers] Unable to write icon for slot ${s.slotIndex} to extensionPath (read-only environment):`, iconErr);
+          }
         }
       }
 
@@ -237,11 +241,12 @@ export class ManagerController {
     if (!tab) return;
 
     if (!tab.exclude) {
-      tab.exclude = { mode: 'inherit', patterns: [], hideExcluded: true };
+      tab.exclude = { mode: 'inherit', patterns: [], hideExcluded: true, useGitIgnore: true };
     }
 
     const currentMode = tab.exclude.mode;
     const currentPatterns = tab.exclude.patterns.join(', ') || '(none)';
+    const gitIgnoreActive = tab.exclude.useGitIgnore !== false;
 
     const items: vscode.QuickPickItem[] = [
       {
@@ -249,6 +254,10 @@ export class ManagerController {
         description: currentMode === 'inherit'
           ? 'Uses VS Code files.exclude + tab patterns. Click to change to custom mode.'
           : 'Ignores VS Code files.exclude and uses only tab patterns. Click to change to inherit mode.'
+      },
+      {
+        label: gitIgnoreActive ? '$(check) Gitignore: Active (Excluding .gitignore files)' : '$(circle-slash) Gitignore: Inactive (Showing .gitignore files)',
+        description: 'Click to toggle .gitignore exclusion'
       },
       {
         label: '$(edit) Edit Custom Patterns',
@@ -269,6 +278,10 @@ export class ManagerController {
       tab.exclude.mode = tab.exclude.mode === 'inherit' ? 'custom' : 'inherit';
       await this.storageService.updateBar(bar);
       vscode.window.showInformationMessage(`Exclude mode changed to "${tab.exclude.mode}"`);
+    } else if (sel.label.includes('Gitignore:')) {
+      tab.exclude.useGitIgnore = !gitIgnoreActive;
+      await this.storageService.updateBar(bar);
+      vscode.window.showInformationMessage(tab.exclude.useGitIgnore ? 'Gitignore exclusion enabled' : 'Gitignore exclusion disabled');
     } else if (sel.label.includes('Edit Custom Patterns')) {
       const input = await vscode.window.showInputBox({
         prompt: 'Enter comma-separated glob patterns to exclude (e.g. node_modules, *.log, dist, .git)',
@@ -279,7 +292,7 @@ export class ManagerController {
         await this.storageService.updateBar(bar);
         vscode.window.showInformationMessage(`Patterns updated: ${tab.exclude.patterns.join(', ') || 'none'}`);
       }
-    } else if (sel.label.includes('Toggle')) {
+    } else if (sel.label.includes('Toggle:')) {
       tab.exclude.hideExcluded = !tab.exclude.hideExcluded;
       await this.storageService.updateBar(bar);
       vscode.window.showInformationMessage(tab.exclude.hideExcluded ? 'Excluded files are now hidden' : 'All files are now shown');
@@ -293,7 +306,7 @@ export class ManagerController {
     if (!tab) return;
 
     if (!tab.exclude) {
-      tab.exclude = { mode: 'inherit', patterns: [], hideExcluded: true };
+      tab.exclude = { mode: 'inherit', patterns: [], hideExcluded: true, useGitIgnore: true };
     }
 
     tab.exclude.hideExcluded = !tab.exclude.hideExcluded;

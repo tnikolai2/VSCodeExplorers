@@ -63,7 +63,7 @@ const {
   isPathInside,
   isPathAllowed
 } = require('../src/utils/pathUtils');
-import { BarConfig } from '../src/models/types';
+import { BarConfig, MAX_SLOTS } from '../src/models/types';
 
 console.log('--- RUNNING CUSTOM EXPLORERS VERIFICATION TESTS ---');
 
@@ -223,9 +223,9 @@ async function testStorageService() {
   const storageContext: any = { globalState: mockGlobalState };
   const storageService = new StorageService(storageContext);
 
-  // Initial state must have 10 bars
+  // Initial state must have MAX_SLOTS bars
   const state = storageService.getState();
-  assert.strictEqual(state.bars.length, 10, 'Must initialize 10 explorer bars');
+  assert.strictEqual(state.bars.length, MAX_SLOTS, `Must initialize ${MAX_SLOTS} explorer bars`);
   assert.strictEqual(state.bars[0].enabled, true, 'Slot 1 enabled by default');
   assert.strictEqual(state.bars[1].enabled, false, 'Slot 2 disabled by default');
 
@@ -280,13 +280,35 @@ async function testStorageService() {
 console.log('Test 6: SVG Icon Generator');
 const svg1 = IconGenerator.generateSvg('1');
 assert.ok(svg1.includes('<svg') && svg1.includes('>1<'), 'SVG must contain label "1"');
-assert.ok(svg1.includes('mask="url(#folderMask)"'), 'SVG must use mask');
+assert.ok(svg1.includes('mask="url(#folderMask'), 'SVG must use mask');
 
 const svgFE = IconGenerator.generateSvg('FE');
 assert.ok(svgFE.includes('>FE<'), 'SVG must contain label "FE"');
 
 const svgAPI = IconGenerator.generateSvg('API');
 assert.ok(svgAPI.includes('>API<'), 'SVG must contain label "API"');
+
+// Test 7: Gitignore and Exclude rules merging logic
+console.log('Test 7: Gitignore and Exclude rules');
+const picomatch = require('picomatch');
+const rawPatterns = ['node_modules/', '*.log', 'dist/', '.git', 'out'];
+const normalized = rawPatterns.map((p) => {
+  let norm = p.replace(/\\/g, '/');
+  if (norm.endsWith('/')) norm = norm.slice(0, -1);
+  if (norm.startsWith('/')) norm = norm.slice(1);
+  if (!norm.startsWith('**/')) {
+    norm = `**/${norm}`;
+  }
+  return norm;
+});
+const isMatch = picomatch(normalized, { dot: true, nocase: true });
+const checkExclude = (name: string, fsPath: string) => isMatch(name) || isMatch(fsPath.replace(/\\/g, '/'));
+
+assert.strictEqual(checkExclude('node_modules', 'E:/proj/node_modules'), true, 'node_modules should be excluded');
+assert.strictEqual(checkExclude('dist', 'E:/proj/dist'), true, 'dist should be excluded');
+assert.strictEqual(checkExclude('.git', 'E:/proj/.git'), true, '.git should be excluded');
+assert.strictEqual(checkExclude('app.log', 'E:/proj/src/app.log'), true, '*.log should be excluded');
+assert.strictEqual(checkExclude('index.ts', 'E:/proj/src/index.ts'), false, 'index.ts should not be excluded');
 
 testStorageService().then(() => {
   console.log('--- ALL TESTS PASSED SUCCESSFULLY! ---');

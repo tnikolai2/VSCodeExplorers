@@ -62,13 +62,35 @@ export function getFolderDisplayName(p: string): string {
 }
 
 /**
+ * Detects whether the current environment or target OS is Windows.
+ * Works seamlessly in Node.js (Extension Host, build scripts, tests)
+ * and Browser/Webview (via window.__VSCODE_PLATFORM__ or navigator).
+ */
+export function isWindowsPlatform(): boolean {
+  if (typeof process !== 'undefined' && process?.platform) {
+    return process.platform === 'win32';
+  }
+  const globalObj = typeof globalThis !== 'undefined' ? (globalThis as Record<string, any>) : undefined;
+  if (globalObj) {
+    if (globalObj.__VSCODE_PLATFORM__) {
+      return globalObj.__VSCODE_PLATFORM__ === 'win32';
+    }
+    const nav = globalObj.navigator;
+    if (nav?.platform && typeof nav.platform === 'string' && nav.platform.toLowerCase().includes('win')) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
  * Returns a normalized path suitable for internal comparisons, cache keys, and Sets.
  * Respects OS case sensitivity (case-insensitive on Windows, case-sensitive on POSIX).
  */
 export function normalizeForComparison(p: string): string {
   if (!p) return '';
   const norm = normalizePath(p);
-  const isWindows = process.platform === 'win32' || WINDOWS_DRIVE_ROOT_REGEX.test(norm) || /^[a-zA-Z]:\//.test(norm);
+  const isWindows = isWindowsPlatform() || WINDOWS_DRIVE_ROOT_REGEX.test(norm) || /^[a-zA-Z]:\//.test(norm);
   return isWindows ? norm.toLowerCase() : norm;
 }
 
@@ -89,7 +111,7 @@ export function joinSubPath(parentPath: string, childName: string): string {
   if (!parentPath) return childName;
   if (!childName) return parentPath;
 
-  const sep = parentPath.includes('/') && !parentPath.includes('\\') ? '/' : (process.platform === 'win32' ? '\\' : '/');
+  const sep = parentPath.includes('/') && !parentPath.includes('\\') ? '/' : (isWindowsPlatform() ? '\\' : '/');
   const endsWithSep = parentPath.endsWith('/') || parentPath.endsWith('\\');
   return endsWithSep ? `${parentPath}${childName}` : `${parentPath}${sep}${childName}`;
 }

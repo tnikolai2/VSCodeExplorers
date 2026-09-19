@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { BarConfig } from '../models/types';
+import { BarConfig, MAX_SLOTS } from '../models/types';
 import { StorageService } from './storageService';
 
 import { isPathInside, normalizeForComparison } from '../utils/pathUtils';
@@ -88,13 +88,13 @@ export class VisibilityService {
   }
 
   /**
-   * Recalculates and sets VS Code context keys for all 10 slots.
+   * Recalculates and sets VS Code context keys for all slots.
    */
   public async updateVisibility(): Promise<void> {
     const state = this.storageService.getState();
     const wsFolders = vscode.workspace.workspaceFolders;
 
-    for (let i = 1; i <= 10; i++) {
+    for (let i = 1; i <= MAX_SLOTS; i++) {
       const bar = state.bars.find(b => b.slotIndex === i);
       const isVisible = bar ? this.isBarVisible(bar, wsFolders) : false;
       await vscode.commands.executeCommand('setContext', `customExplorer.bar${i}.visible`, isVisible);

@@ -15,6 +15,7 @@ const emit = defineEmits<{
 }>();
 
 const isInherit = ref(true);
+const useGitIgnore = ref(true);
 const patternsText = ref('');
 
 watch(
@@ -23,6 +24,7 @@ watch(
     if (val && props.tab) {
       const ex = props.tab.exclude;
       isInherit.value = ex ? ex.mode === 'inherit' : true;
+      useGitIgnore.value = ex && ex.useGitIgnore !== undefined ? ex.useGitIgnore : true;
       patternsText.value = ex && ex.patterns ? ex.patterns.join('\n') : '';
     }
   },
@@ -38,7 +40,8 @@ function onSave() {
   emit('save', {
     mode: isInherit.value ? 'inherit' : 'custom',
     patterns,
-    hideExcluded: true
+    hideExcluded: props.tab?.exclude?.hideExcluded ?? true,
+    useGitIgnore: useGitIgnore.value
   });
   emit('close');
 }
@@ -69,12 +72,23 @@ function onCancel() {
         <span class="row-value tab-highlight">{{ props.tab.title }}</span>
       </div>
 
-      <!-- Строка 3: Checkbox Inherit -->
+      <!-- Строка 3: Checkbox Inherit & Gitignore -->
       <div class="modal-row checkbox-row">
-        <label class="checkbox-label">
+        <label class="checkbox-label" title="Inherit global 'files.exclude' rules from VS Code settings">
           <input type="checkbox" v-model="isInherit" />
           <span class="checkbox-text">Inherit</span>
+          <span class="info-badge" title="Inherit 'files.exclude' from VS Code settings">?</span>
         </label>
+        <label class="checkbox-label" title="Exclude files using nearest .gitignore (from selected folder or its parents)">
+          <input type="checkbox" v-model="useGitIgnore" />
+          <span class="checkbox-text">Gitignore</span>
+          <span class="info-badge" title="Reads nearest .gitignore from selected folder or its parents">?</span>
+        </label>
+      </div>
+
+      <!-- Hint under checkboxes -->
+      <div class="modal-hint">
+        Inherit: VS Code <code>files.exclude</code> &bull; Gitignore: nearest <code>.gitignore</code>
       </div>
 
       <!-- Строка 4: Textbox (построчно) -->
@@ -189,18 +203,58 @@ function onCancel() {
 
 .checkbox-row {
   margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .checkbox-label {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   font-size: 12px;
   cursor: pointer;
 }
 
 .checkbox-text {
   user-select: none;
+}
+
+.info-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  font-size: 9px;
+  font-weight: 600;
+  background-color: var(--vscode-badge-background, rgba(128, 128, 128, 0.25));
+  color: var(--vscode-badge-foreground, rgba(255, 255, 255, 0.7));
+  cursor: help;
+  user-select: none;
+  margin-left: 1px;
+}
+
+.info-badge:hover {
+  background-color: var(--vscode-button-background, #0e639c);
+  color: #ffffff;
+}
+
+.modal-hint {
+  font-size: 10px;
+  color: var(--vscode-descriptionForeground, rgba(255, 255, 255, 0.55));
+  margin-top: -3px;
+  margin-bottom: 2px;
+  line-height: 1.3;
+}
+
+.modal-hint code {
+  font-family: var(--vscode-editor-font-family, monospace);
+  background-color: var(--vscode-textCodeBlock-background, rgba(128, 128, 128, 0.15));
+  padding: 1px 3px;
+  border-radius: 2px;
+  font-size: 10px;
 }
 
 .textarea-row {

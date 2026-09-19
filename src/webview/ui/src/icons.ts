@@ -6,6 +6,13 @@ export const ICONS = {
   fileTs: '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect width="16" height="16" rx="2" fill="#3178C6"/><path d="M4 6.5h5M6.5 6.5v6M10.2 10.5c.5.5 1.1.8 1.8.8.7 0 1.2-.3 1.2-.8s-.5-.7-1.3-.9c-1.3-.4-2-.8-2-1.9 0-1 .9-1.8 2.1-1.8.8 0 1.5.3 2 .8l-.7.8c-.4-.4-.8-.6-1.3-.6-.6 0-1 .3-1 .7s.4.6 1.2.9c1.3.4 2.1.8 2.1 2 0 1.2-.9 1.9-2.2 1.9-.9 0-1.7-.3-2.3-.9l.7-.9z" fill="#ffffff"/></svg>',
   fileJs: '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect width="16" height="16" rx="2" fill="#F7DF1E"/><path d="M5.5 6.5v4.5c0 1.2-.6 1.6-1.5 1.6-.7 0-1.2-.3-1.5-.7l.8-.8c.2.3.4.4.7.4.4 0 .6-.2.6-.7V6.5h.9zm4.7 4c.5.5 1.1.8 1.8.8.7 0 1.2-.3 1.2-.8s-.5-.7-1.3-.9c-1.3-.4-2-.8-2-1.9 0-1 .9-1.8 2.1-1.8.8 0 1.5.3 2 .8l-.7.8c-.4-.4-.8-.6-1.3-.6-.6 0-1 .3-1 .7s.4.6 1.2.9c1.3.4 2.1.8 2.1 2 0 1.2-.9 1.9-2.2 1.9-.9 0-1.7-.3-2.3-.9l.7-.9z" fill="#000000"/></svg>',
   fileJson: '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 2a1 1 0 0 1 1-1h5.5l4 4V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2z" fill="#cbcb41" stroke="#a0a030" stroke-width="1.2"/><path d="M5 8c0-1.1.4-1.5 1.2-1.5v.8c-.4 0-.5.2-.5.7v.5c0 .4-.2.7-.6.8.4.1.6.4.6.8v.5c0 .5.1.7.5.7v.8C5.4 11.5 5 11.1 5 10V8zm6 0c0-1.1-.4-1.5-1.2-1.5v.8c.4 0 .5.2.5.7v.5c0 .4.2.7.6.8-.4.1-.6.4-.6.8v.5c0 .5-.1.7-.5.7v.8c.8 0 1.2-.4 1.2-1.5V8z" fill="#2d2d2d"/></svg>',
+  fileVue: '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M1.5 2.5h3L8 8.5l3.5-6h3L8 14.5 1.5 2.5z" fill="#42b883"/><path d="M4.5 2.5h2.5L8 4.5l1-2h2.5L8 8.5 4.5 2.5z" fill="#35495e"/></svg>',
+  fileHtml: '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2.5 1.5l1 12 4.5 1.5 4.5-1.5 1-12h-11z" fill="#e34f26"/><path d="M8 2.5v11l3.5-1.2.8-9.8H8z" fill="#ef652a"/><path d="M4.5 5h7M4.7 7.5h5.8l-.4 3.5-2.1.6-2.1-.6-.1-1.5" stroke="#ffffff" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  fileCss: '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2.5 1.5l1 12 4.5 1.5 4.5-1.5 1-12h-11z" fill="#1b73ba"/><path d="M8 2.5v11l3.5-1.2.8-9.8H8z" fill="#2993d3"/><path d="M4.5 5h7M4.7 7.5h5.8l-.4 3.5-2.1.6-2.1-.6-.1-1.5" stroke="#ffffff" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  fileMd: '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect width="16" height="16" rx="2" fill="#083fa1"/><path d="M3 11V5l2.5 3L8 5v6M11 8l2 2.5m0 0l2-2.5m-2 2.5V5" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  filePy: '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M7.8 1.5c-2.8 0-2.6 1.2-2.6 1.2l.02 1.3H7.9v.4H4.3S2 4.2 2 7.1s2 2.8 2 2.8h1.2V8.6s-.06-1.5 1.5-1.5h2.6s1.4-.02 1.4-1.4V3.1S10.8 1.5 7.8 1.5zm-1.2.9a.5.5 0 1 1 0 1 .5.5 0 0 1 0-1z" fill="#387eb8"/><path d="M8.2 14.5c2.8 0 2.6-1.2 2.6-1.2l-.02-1.3H8.1v-.4h3.6s2.3.2 2.3-2.7-2-2.8-2-2.8h-1.2v1.3s.06 1.5-1.5 1.5H6.7s-1.4.02-1.4 1.4v2.6s-.1 1.6 2.9 1.6zm1.2-.9a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1z" fill="#ffe052"/></svg>',
+  fileYaml: '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect width="16" height="16" rx="2" fill="#cb171e"/><path d="M4 4.5l2 3.5v3.5h1.5V8l2-3.5h-1.5L7 6.5 5.5 4.5H4z" fill="#ffffff"/></svg>',
+  fileImage: '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect width="16" height="16" rx="2" fill="#8b5cf6"/><circle cx="5" cy="5" r="1.5" fill="#fef08a"/><path d="M2.5 12.5l4-5 3.5 4 2-2.5 2 3.5h-11.5z" fill="#ffffff"/></svg>',
   close: '<svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8m0-8l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
   search: '<svg width="15" height="15" viewBox="0 0 16 16" fill="none"><defs><linearGradient id="lensGrad_diag" x1="2" y1="2" x2="10" y2="10" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#60a5fa" stop-opacity="0.85"/><stop offset="100%" stop-color="#2563eb" stop-opacity="0.95"/></linearGradient><linearGradient id="handleGrad_diag" x1="9" y1="9" x2="15" y2="15" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#94a3b8"/><stop offset="50%" stop-color="#64748b"/><stop offset="100%" stop-color="#334155"/></linearGradient></defs><path d="M10 10l4.3 4.3a1 1 0 0 1-1.4 1.4L8.7 11.5" stroke="url(#handleGrad_diag)" stroke-width="2.3" stroke-linecap="round"/><circle cx="6.5" cy="6.5" r="5" stroke="#3b82f6" stroke-width="1.6" fill="url(#lensGrad_diag)"/><path d="M4 4a3.2 3.2 0 0 1 4.5 0" stroke="#ffffff" stroke-width="1" stroke-linecap="round" opacity="0.85"/><circle cx="4.5" cy="4.5" r="0.6" fill="#ffffff" opacity="0.95"/></svg>',
   lightbulb: '<svg width="15" height="15" viewBox="0 0 16 16" fill="none"><defs><radialGradient id="bulbGlow_hint" cx="8" cy="6" r="6" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#fffbeb"/><stop offset="45%" stop-color="#fef08a"/><stop offset="85%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#d97706"/></radialGradient></defs><path d="M8 1.5A5 5 0 0 0 3.5 6.5c0 2 1.3 3.5 2.2 4.5h4.6c.9-1 2.2-2.5 2.2-4.5A5 5 0 0 0 8 1.5z" fill="url(#bulbGlow_hint)"/><path d="M6.2 6.2c.4-.8 1-.8 1.8-.8s1.4 0 1.8.8" stroke="#ffffff" stroke-width="0.8" stroke-linecap="round" opacity="0.9"/><rect x="5.7" y="11.2" width="4.6" height="1.4" rx="0.7" fill="#94a3b8"/><rect x="6.2" y="12.8" width="3.6" height="1.2" rx="0.6" fill="#64748b"/><path d="M7 14.2h2a1 1 0 0 1-2 0z" fill="#475569"/></svg>',
@@ -20,49 +27,17 @@ export function getFileIcon(fileName: string): string {
   const parts = fileName.split('.');
   const ext = parts.length > 1 ? parts.pop()?.toLowerCase() : '';
   if (ext === 'ts' || ext === 'tsx') return ICONS.fileTs;
-  if (ext === 'js' || ext === 'jsx') return ICONS.fileJs;
+  if (ext === 'js' || ext === 'jsx' || ext === 'mjs' || ext === 'cjs') return ICONS.fileJs;
   if (ext === 'json') return ICONS.fileJson;
+  if (ext === 'vue') return ICONS.fileVue;
+  if (ext === 'html' || ext === 'htm') return ICONS.fileHtml;
+  if (ext === 'css' || ext === 'scss' || ext === 'less') return ICONS.fileCss;
+  if (ext === 'md' || ext === 'markdown') return ICONS.fileMd;
+  if (ext === 'py') return ICONS.filePy;
+  if (ext === 'yaml' || ext === 'yml') return ICONS.fileYaml;
+  if (ext === 'svg' || ext === 'png' || ext === 'jpg' || ext === 'jpeg' || ext === 'gif' || ext === 'webp') return ICONS.fileImage;
   return ICONS.file;
 }
 
-export function generateIconSvg(label: string): string {
-  const cleanLabel = (label || '').trim().slice(0, 3).toUpperCase();
-  let fontSize = 13.0;
-  let lengthAttrs = '';
-
-  if (cleanLabel.length === 1) {
-    fontSize = 17.5;
-  } else if (cleanLabel.length === 2) {
-    fontSize = 14.5;
-    lengthAttrs = ' textLength="17" lengthAdjust="spacingAndGlyphs"';
-  } else if (cleanLabel.length >= 3) {
-    fontSize = 13.0;
-    lengthAttrs = ' textLength="20" lengthAdjust="spacingAndGlyphs"';
-  }
-
-  const escapedText = cleanLabel
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22">
-  <defs>
-    <mask id="previewMask_${cleanLabel}">
-      <rect width="24" height="24" fill="white"/>
-      <text x="12" y="13.7" 
-            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" 
-            font-size="${fontSize}" 
-            font-weight="900"${lengthAttrs}
-            text-anchor="middle" 
-            dominant-baseline="central" 
-            alignment-baseline="central" 
-            fill="black">${escapedText}</text>
-    </mask>
-  </defs>
-  <g mask="url(#previewMask_${cleanLabel})">
-    <path fill="currentColor" fill-opacity="0.45" d="M1.5 3.5C1.5 2.67 2.17 2 3 2h5.5c.4 0 .78.16 1.06.44L11.5 4.5H21c.83 0 1.5.67 1.5 1.5V7H1.5V3.5z"/>
-    <path fill="currentColor" d="M1 6h22v15c0 .83-.67 1.5-1.5 1.5H2.5c-.83 0-1.5-.67-1.5-1.5V6z"/>
-  </g>
-</svg>`;
-}
+export { generateIconSvg } from '../../../utils/iconSvg';
 

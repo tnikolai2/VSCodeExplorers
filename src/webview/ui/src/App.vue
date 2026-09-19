@@ -84,6 +84,7 @@ function openExcludeModal(tabId?: string) {
 
 function onSaveExclude(exclude: TabExcludeConfig) {
   if (!excludeModalTab.value) return;
+  dirCache.value = new Map();
   postMessage({
     command: 'saveTabExclude',
     tabId: excludeModalTab.value.id,

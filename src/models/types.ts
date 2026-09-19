@@ -1,3 +1,5 @@
+export const MAX_SLOTS = 10;
+
 export interface FolderConfig {
   path: string;
   label?: string;
@@ -9,6 +11,7 @@ export interface TabExcludeConfig {
   mode: ExcludeMode;       // 'inherit': VS Code global files.exclude + custom patterns; 'custom': only custom patterns
   patterns: string[];      // List of glob patterns to exclude (e.g. ['node_modules', '.git', '*.tmp'])
   hideExcluded: boolean;   // Quick toggle to show or hide excluded items
+  useGitIgnore?: boolean;  // Whether to exclude files and folders matched by .gitignore
 }
 
 export interface TabConfig {

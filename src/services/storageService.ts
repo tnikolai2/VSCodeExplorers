@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { BarConfig, CustomExplorersState, TabConfig, FolderConfig, TabExcludeConfig } from '../models/types';
+import { BarConfig, CustomExplorersState, TabConfig, FolderConfig, TabExcludeConfig, MAX_SLOTS } from '../models/types';
 import { isWindowsDriveRoot, formatWindowsDriveRoot, isPosixRoot, getFolderDisplayName, normalizePath, isPathEqual, normalizeForComparison } from '../utils/pathUtils';
 
 const STORAGE_KEY = 'customExplorers.state';
@@ -16,7 +16,7 @@ export class StorageService {
   private loadState(): CustomExplorersState {
     try {
       const raw = this.context.globalState.get<CustomExplorersState>(STORAGE_KEY);
-      if (raw && raw.bars && raw.bars.length === 10) {
+      if (raw && raw.bars && raw.bars.length === MAX_SLOTS) {
         if (raw.filterByWorkspace === undefined) {
           raw.filterByWorkspace = false;
         }
@@ -49,9 +49,9 @@ export class StorageService {
       console.error('[Custom Explorers] Error loading state from globalState, resetting to defaults:', err);
     }
 
-    // Initialize 10 slots
+    // Initialize slots
     const bars: BarConfig[] = [];
-    for (let i = 1; i <= 10; i++) {
+    for (let i = 1; i <= MAX_SLOTS; i++) {
       bars.push({
         id: `bar-${i}`,
         slotIndex: i,
@@ -79,11 +79,18 @@ export class StorageService {
     return this._state;
   }
 
-  public async saveState(state: CustomExplorersState): Promise<void> {
+  /**
+   * Persists state to VS Code global storage.
+   * @param state State to save.
+   * @param notify Whether to fire onDidChangeState event (default: true). Set to false to avoid full webview re-render cycles when updating local state like expanded folders.
+   */
+  public async saveState(state: CustomExplorersState, notify: boolean = true): Promise<void> {
     this._state = state;
     try {
       await this.context.globalState.update(STORAGE_KEY, state);
-      this._onDidChangeState.fire(this._state);
+      if (notify) {
+        this._onDidChangeState.fire(this._state);
+      }
     } catch (err: any) {
       console.error('[Custom Explorers] Error saving state:', err);
       vscode.window.showErrorMessage(`Failed to save Custom Explorers state: ${err?.message || err}`);
@@ -108,7 +115,7 @@ export class StorageService {
   public async addBar(name?: string): Promise<BarConfig | undefined> {
     const slot = this._state.bars.find(b => !b.enabled);
     if (!slot) {
-      return undefined; // All 10 slots used
+      return undefined; // All slots used (MAX_SLOTS)
     }
 
     slot.enabled = true;
@@ -147,7 +154,8 @@ export class StorageService {
       exclude: {
         mode: 'inherit',
         patterns: [],
-        hideExcluded: true
+        hideExcluded: true,
+        useGitIgnore: true
       }
     };
 
@@ -238,6 +246,11 @@ export class StorageService {
     await this.updateBar(bar);
   }
 
+  /**
+   * Persists the list of expanded folder paths for a tab.
+   * Note: Uses saveState(..., false) intentionally without emitting onDidChangeState
+   * to avoid triggering a full webview re-render cycle on every folder expand/collapse.
+   */
   public async setExpandedFolders(slotIndex: number, tabId: string, expandedFolders: string[]): Promise<void> {
     const bar = this.getBar(slotIndex);
     if (!bar) return;
@@ -246,7 +259,7 @@ export class StorageService {
     if (!tab) return;
 
     tab.expandedFolders = expandedFolders;
-    await this.context.globalState.update(STORAGE_KEY, this._state);
+    await this.saveState(this._state, false /* do not trigger full webview re-render */);
   }
 
   public async setTabExclude(slotIndex: number, tabId: string, exclude: TabExcludeConfig): Promise<void> {

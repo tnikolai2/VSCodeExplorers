@@ -184,6 +184,12 @@
         "title": "Storage & Performance Diagnostics",
         "category": "Custom Explorers",
         "icon": "$(graph)"
+      },
+      {
+        "command": "customExplorer.loadDemoPreset",
+        "title": "Load Demo Preset (for Screenshots & Showcase)",
+        "category": "Custom Explorers",
+        "icon": "$(sparkle)"
       }
     ],
     "menus": {

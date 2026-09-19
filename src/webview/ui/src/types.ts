@@ -9,6 +9,7 @@ export interface TabExcludeConfig {
   mode: ExcludeMode;
   patterns: string[];
   hideExcluded: boolean;
+  useGitIgnore?: boolean;
 }
 
 export interface TabConfig {

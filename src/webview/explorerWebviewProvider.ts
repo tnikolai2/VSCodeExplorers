@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import * as fs from 'fs';
 import picomatch from 'picomatch';
 import { StorageService } from '../services/storageService';
 import { ManagerController } from '../manager/managerController';
@@ -10,6 +11,7 @@ export class ExplorerWebviewProvider implements vscode.WebviewViewProvider {
   private _view?: vscode.WebviewView;
   private fileWatchers: vscode.Disposable[] = [];
   private fsDebounceTimers = new Map<string, NodeJS.Timeout>();
+  private activeExcludeMatcher: ((name: string, fsPath: string) => boolean) | null = null;
 
   constructor(
     public readonly slotIndex: number,
@@ -24,8 +26,18 @@ export class ExplorerWebviewProvider implements vscode.WebviewViewProvider {
       }
     });
 
-    // Listen for file operations within VS Code only if this view is visible
+    // Listen for file and workspace operations within VS Code only if this view is visible
     this.context.subscriptions.push(
+      vscode.workspace.onDidChangeWorkspaceFolders(() => {
+        if (this.visible) {
+          this.updateWebview();
+        }
+      }),
+      vscode.workspace.onDidChangeConfiguration(e => {
+        if (e.affectsConfiguration('files.exclude') && this.visible) {
+          this.updateWebview();
+        }
+      }),
       vscode.workspace.onDidCreateFiles(e => {
         if (!this.visible) return;
         for (const file of e.files) {
@@ -220,6 +232,8 @@ export class ExplorerWebviewProvider implements vscode.WebviewViewProvider {
     const activeTab = this.getActiveTab();
     this._view.title = bar.name;
     this._view.description = activeTab ? `[${activeTab.title}]` : '';
+
+    this.rebuildExcludeMatcher(activeTab);
 
     if (this.visible) {
       this.updateFileWatchers();
@@ -476,7 +490,6 @@ export class ExplorerWebviewProvider implements vscode.WebviewViewProvider {
       const entries = await vscode.workspace.fs.readDirectory(uri);
       const readElapsedMs = Math.round(performance.now() - startT);
       const activeTab = this.getActiveTab();
-      const matcher = this.buildExcludeMatcher(activeTab);
 
       const folders: { name: string; path: string; isDirectory: boolean }[] = [];
       const files: { name: string; path: string; isDirectory: boolean }[] = [];
@@ -484,7 +497,7 @@ export class ExplorerWebviewProvider implements vscode.WebviewViewProvider {
       for (const [name, fileType] of entries) {
         const itemPath = joinSubPath(resolvedPath, name);
 
-        if (matcher && matcher(name, itemPath)) {
+        if (this.activeExcludeMatcher && this.activeExcludeMatcher(name, itemPath)) {
           continue;
         }
 
@@ -518,36 +531,109 @@ export class ExplorerWebviewProvider implements vscode.WebviewViewProvider {
     }
   }
 
-  private buildExcludeMatcher(tab?: TabConfig): ((name: string, fsPath: string) => boolean) | null {
-    if (!tab) return null;
-    const excludeConfig = tab.exclude || { mode: 'inherit', patterns: [], hideExcluded: true };
-    if (!excludeConfig.hideExcluded) return null;
+  private rebuildExcludeMatcher(activeTab?: TabConfig): void {
+    if (!activeTab) {
+      this.activeExcludeMatcher = null;
+      return;
+    }
 
-    const patternsToMatch: string[] = [];
+    const excludeConfig = activeTab.exclude || { mode: 'inherit', patterns: [], hideExcluded: true, useGitIgnore: true };
+    if (!excludeConfig.hideExcluded) {
+      this.activeExcludeMatcher = null;
+      return;
+    }
+
+    const patterns: string[] = [];
+
+    // 1. Inherit VS Code global files.exclude
     if (excludeConfig.mode === 'inherit') {
       const vsExclude = vscode.workspace.getConfiguration('files', null).get<Record<string, boolean>>('exclude') || {};
       for (const [pattern, enabled] of Object.entries(vsExclude)) {
-        if (enabled) patternsToMatch.push(pattern);
+        if (enabled) patterns.push(pattern);
       }
     }
-    if (excludeConfig.patterns && excludeConfig.patterns.length > 0) {
-      patternsToMatch.push(...excludeConfig.patterns);
-    }
-    if (patternsToMatch.length === 0) return null;
 
-    const normalizedPatterns = patternsToMatch.map(p => {
+    // 2. Custom patterns from Tab
+    if (excludeConfig.patterns && excludeConfig.patterns.length > 0) {
+      patterns.push(...excludeConfig.patterns);
+    }
+
+    // 3. .gitignore from nearest folder or its parents (first found)
+    if (excludeConfig.useGitIgnore !== false) {
+      patterns.push('.git');
+      const dirsToCheck = new Set<string>();
+      if (activeTab.folders && activeTab.folders.length > 0) {
+        for (const f of activeTab.folders) {
+          dirsToCheck.add(f.path);
+        }
+      } else if (vscode.workspace.workspaceFolders) {
+        for (const wf of vscode.workspace.workspaceFolders) {
+          dirsToCheck.add(wf.uri.fsPath);
+        }
+      }
+
+      const gitignoreFiles = new Set<string>();
+      for (const dir of dirsToCheck) {
+        const found = this.findNearestGitIgnore(dir);
+        if (found) {
+          gitignoreFiles.add(found);
+        }
+      }
+
+      for (const gitignorePath of gitignoreFiles) {
+        try {
+          const lines = fs.readFileSync(gitignorePath, 'utf8').split(/\r?\n/);
+          for (let line of lines) {
+            line = line.trim();
+            if (!line || line.startsWith('#') || line.startsWith('!')) continue;
+            if (line.endsWith('/')) line = line.slice(0, -1);
+            if (line.startsWith('/')) line = line.slice(1);
+            if (line) patterns.push(line);
+          }
+        } catch {
+          // Ignore read errors
+        }
+      }
+    }
+
+    if (patterns.length === 0) {
+      this.activeExcludeMatcher = null;
+      return;
+    }
+
+    const normalizedPatterns = patterns.map(p => {
       let norm = p.replace(/\\/g, '/');
-      if (!norm.startsWith('**/') && !norm.startsWith('*')) {
-        return `**/${norm}`;
+      if (!norm.startsWith('**/')) {
+        norm = `**/${norm}`;
       }
       return norm;
     });
 
     const isMatch = picomatch(normalizedPatterns, { dot: true, nocase: process.platform === 'win32' });
-    return (name: string, fsPath: string) => {
-      const normalizedFsPath = fsPath.replace(/\\/g, '/');
-      return isMatch(name) || isMatch(normalizedFsPath);
+    this.activeExcludeMatcher = (name: string, fsPath: string) => {
+      const normFsPath = fsPath.replace(/\\/g, '/');
+      return isMatch(name) || isMatch(normFsPath);
     };
+  }
+
+  private findNearestGitIgnore(startDir: string): string | null {
+    try {
+      let curr = path.resolve(startDir);
+      while (curr) {
+        const gitignoreFile = path.join(curr, '.gitignore');
+        if (fs.existsSync(gitignoreFile)) {
+          return gitignoreFile;
+        }
+        const parent = path.dirname(curr);
+        if (!parent || parent === curr) {
+          break;
+        }
+        curr = parent;
+      }
+    } catch {
+      // Ignore path resolution errors
+    }
+    return null;
   }
 
   private getHtmlForWebview(webview: vscode.Webview): string {
@@ -562,6 +648,7 @@ export class ExplorerWebviewProvider implements vscode.WebviewViewProvider {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Custom Explorer</title>
   <link rel="stylesheet" href="${styleUri}">
+  <script>window.__VSCODE_PLATFORM__ = ${JSON.stringify(process.platform)};</script>
 </head>
 <body>
   <div id="app"></div>
