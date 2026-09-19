@@ -36,7 +36,10 @@ function onAddFolder() {
       <div class="empty-icon" v-html="ICONS.folderOpened"></div>
       <div class="empty-title">{{ props.activeTab ? props.activeTab.title : 'Active Tab' }}</div>
       <div class="empty-subtitle">No folders added to this tab yet</div>
-      <button class="empty-btn" @click="onAddFolder">📁 Add Folder to Tab</button>
+      <button class="empty-btn" @click="onAddFolder">
+        <span class="empty-btn-icon" v-html="ICONS.folderClosed"></span>
+        <span>Add Folder to Tab</span>
+      </button>
     </div>
 
     <template v-else>
@@ -104,6 +107,9 @@ function onAddFolder() {
   margin-bottom: 12px;
 }
 .empty-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 5px 14px;
   background-color: var(--vscode-button-background, #0e639c);
   color: var(--vscode-button-foreground, #ffffff);
@@ -114,5 +120,10 @@ function onAddFolder() {
 }
 .empty-btn:hover {
   background-color: var(--vscode-button-hoverBackground, #1177bb);
+}
+.empty-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

@@ -1,5 +1,6 @@
 <script setup vapor lang="ts">
 import { computed } from 'vue';
+import { ICONS } from '../icons';
 import type { ContextMenuState } from '../types';
 import { postMessage } from '../vscode';
 
@@ -9,6 +10,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'close'): void;
+  (e: 'openExcludeModal', tabId?: string): void;
 }>();
 
 const positionStyle = computed(() => {
@@ -37,6 +39,9 @@ function handleAction(action: string) {
       break;
     case 'addFolder':
       postMessage({ command: 'addFolder', tabId: target.tabId });
+      break;
+    case 'configureExclude':
+      emit('openExcludeModal', target.tabId);
       break;
     case 'refresh':
       postMessage({ command: 'refresh' });
@@ -78,7 +83,11 @@ function handleAction(action: string) {
     <!-- Tab context menu -->
     <template v-if="props.menuState.target.isTab">
       <div class="context-menu-item" @click="handleAction('renameTab')">Rename Tab...</div>
-      <div class="context-menu-item" @click="handleAction('addFolder')">📁 Add Folder to Tab...</div>
+      <div class="context-menu-item" @click="handleAction('addFolder')">
+        <span class="item-icon" v-html="ICONS.folderClosed"></span>
+        <span>Add Folder to Tab...</span>
+      </div>
+      <div class="context-menu-item" @click="handleAction('configureExclude')">Exclude Rules...</div>
       <div class="context-menu-item" @click="handleAction('addTab')">+ New Tab...</div>
       <div class="context-menu-sep"></div>
       <div class="context-menu-item danger" @click="handleAction('deleteTab')">Delete Tab</div>
@@ -87,9 +96,16 @@ function handleAction(action: string) {
     <!-- Container / Header context menu -->
     <template v-else-if="props.menuState.target.isContainer || props.menuState.target.isTabsHeader">
       <div class="context-menu-item" @click="handleAction('addTab')">+ New Tab...</div>
-      <div class="context-menu-item" @click="handleAction('addFolder')">📁 Add Folder to Tab...</div>
+      <div class="context-menu-item" @click="handleAction('addFolder')">
+        <span class="item-icon" v-html="ICONS.folderClosed"></span>
+        <span>Add Folder to Tab...</span>
+      </div>
+      <div class="context-menu-item" @click="handleAction('configureExclude')">Exclude Rules...</div>
       <div class="context-menu-sep"></div>
-      <div class="context-menu-item" @click="handleAction('refresh')">🔄 Refresh</div>
+      <div class="context-menu-item" @click="handleAction('refresh')">
+        <span class="item-icon" v-html="ICONS.refresh"></span>
+        <span>Refresh</span>
+      </div>
     </template>
 
     <!-- File / Folder context menu -->
@@ -135,6 +151,12 @@ function handleAction(action: string) {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+.item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 .context-menu-item:hover {
   background-color: var(--vscode-menu-selectionBackground, #094771);

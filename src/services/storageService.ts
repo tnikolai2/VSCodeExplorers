@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { BarConfig, CustomExplorersState, TabConfig, FolderConfig } from '../models/types';
+import { BarConfig, CustomExplorersState, TabConfig, FolderConfig, TabExcludeConfig } from '../models/types';
 import { isWindowsDriveRoot, formatWindowsDriveRoot, isPosixRoot, getFolderDisplayName, normalizePath, isPathEqual, normalizeForComparison } from '../utils/pathUtils';
 
 const STORAGE_KEY = 'customExplorers.state';
@@ -245,6 +245,17 @@ export class StorageService {
 
     tab.expandedFolders = expandedFolders;
     await this.context.globalState.update(STORAGE_KEY, this._state);
+  }
+
+  public async setTabExclude(slotIndex: number, tabId: string, exclude: TabExcludeConfig): Promise<void> {
+    const bar = this.getBar(slotIndex);
+    if (!bar) return;
+
+    const tab = bar.tabs.find(t => t.id === tabId);
+    if (!tab) return;
+
+    tab.exclude = exclude;
+    await this.updateBar(bar);
   }
 
   public async saveManagerSettings(

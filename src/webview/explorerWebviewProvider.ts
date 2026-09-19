@@ -328,9 +328,17 @@ export class ExplorerWebviewProvider implements vscode.WebviewViewProvider {
           break;
 
         case 'configureExclude': {
-          const activeTab = this.getActiveTab();
-          if (activeTab) {
-            await this.managerController.configureExcludeRules(this.slotIndex, activeTab.id);
+          const targetTabId = message.tabId || this.getActiveTab()?.id;
+          if (targetTabId) {
+            await this.managerController.configureExcludeRules(this.slotIndex, targetTabId);
+          }
+          break;
+        }
+
+        case 'saveTabExclude': {
+          const targetTabId = message.tabId || this.getActiveTab()?.id;
+          if (targetTabId && message.exclude) {
+            await this.storageService.setTabExclude(this.slotIndex, targetTabId, message.exclude);
           }
           break;
         }

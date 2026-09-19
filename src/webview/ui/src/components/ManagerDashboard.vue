@@ -1,6 +1,6 @@
 <script setup vapor lang="ts">
 import { ref, onMounted } from 'vue';
-import { generateIconSvg } from '../icons';
+import { generateIconSvg, ICONS } from '../icons';
 import { postMessage } from '../vscode';
 
 export interface ManagerSlotConfig {
@@ -102,10 +102,16 @@ function onSave() {
       </div>
       <div class="header-right">
         <button class="save-btn" :disabled="isSaving" @click="onSave">
-          💾 {{ isSaving ? 'Saving...' : 'Save' }}
+          <span class="btn-svg-icon" v-html="ICONS.save"></span>
+          <span>{{ isSaving ? 'Saving...' : 'Save' }}</span>
         </button>
         <span v-if="saveSuccess" class="save-success">Saved ✓</span>
       </div>
+    </div>
+
+    <div class="slots-header-note">
+      <span class="hint-svg-icon" v-html="ICONS.lightbulb"></span>
+      Activity Bar icons change only after reload.
     </div>
 
     <div class="slots-list">
@@ -154,9 +160,12 @@ function onSave() {
     <div class="diagnostics-card">
       <div class="diag-header">
         <div class="diag-title-row">
-          <span class="diag-title">🔍 Storage & Performance Diagnostics</span>
+          <span class="diag-title">
+            <span class="title-svg-icon" v-html="ICONS.search"></span>
+            Storage & Performance Diagnostics
+          </span>
           <span v-if="diagResponseMs !== null" class="diag-perf-badge">
-            ⚡ Ping: {{ diagResponseMs }}ms
+            <span class="badge-svg-icon" v-html="ICONS.bolt"></span> Ping: {{ diagResponseMs }}ms
           </span>
         </div>
         <div class="diag-actions">
@@ -169,7 +178,7 @@ function onSave() {
             @click="cleanTrash"
             title="Remove non-existent paths from storage"
           >
-            🧹 Clean Trash ({{ diagnostics.staleExpandedPaths.length }} stale)
+            <span class="btn-svg-icon" v-html="ICONS.trash"></span> Clean Trash ({{ diagnostics.staleExpandedPaths.length }} stale)
           </button>
         </div>
       </div>
@@ -208,7 +217,8 @@ function onSave() {
     </div>
 
     <div class="manager-footer-hint">
-      💡 Tabs and folders are managed directly inside each Activity Bar explorer.
+      <span class="hint-svg-icon" v-html="ICONS.lightbulb"></span>
+      Tabs and folders are managed directly inside each Activity Bar explorer.
     </div>
   </div>
 </template>
@@ -304,6 +314,15 @@ function onSave() {
   font-size: 12px;
   color: #4ec9b0;
   font-weight: 500;
+}
+
+.slots-header-note {
+  font-size: 12px;
+  color: var(--vscode-descriptionForeground, rgba(255, 255, 255, 0.7));
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .slots-list {
@@ -545,5 +564,31 @@ function onSave() {
 
 .val-warn {
   color: #f14c4c !important;
+}
+
+.btn-svg-icon,
+.title-svg-icon,
+.badge-svg-icon,
+.hint-svg-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+.title-svg-icon {
+  margin-right: 6px;
+}
+
+.btn-svg-icon {
+  margin-right: 5px;
+}
+
+.badge-svg-icon {
+  margin-right: 4px;
+}
+
+.hint-svg-icon {
+  margin-right: 6px;
 }
 </style>

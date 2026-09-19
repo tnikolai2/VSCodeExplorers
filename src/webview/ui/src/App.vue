@@ -1,10 +1,11 @@
 <script setup vapor lang="ts">
 import { ref, reactive, computed, onMounted, onUnmounted } from 'vue';
-import type { BarConfig, DirItem, ContextMenuTarget, ContextMenuState } from './types';
+import type { BarConfig, DirItem, ContextMenuTarget, ContextMenuState, TabConfig, TabExcludeConfig } from './types';
 import { postMessage, norm, isPathInside, getVsCodeApi } from './vscode';
 import TabsHeader from './components/TabsHeader.vue';
 import FileTree from './components/FileTree.vue';
 import ContextMenu from './components/ContextMenu.vue';
+import ExcludeModal from './components/ExcludeModal.vue';
 import ManagerDashboard from './components/ManagerDashboard.vue';
 
 const isManager = ref((window as any).EXPLORER_MODE === 'manager');
@@ -67,6 +68,27 @@ function openContextMenu(event: MouseEvent, target: ContextMenuTarget) {
 function closeContextMenu() {
   contextMenuState.visible = false;
   contextMenuState.target = null;
+}
+
+const excludeModalVisible = ref(false);
+const excludeModalTab = ref<TabConfig | null>(null);
+
+function openExcludeModal(tabId?: string) {
+  const targetId = tabId || activeTabId.value;
+  const tab = currentBar.value?.tabs?.find((t) => t.id === targetId) || activeTab.value || null;
+  if (tab) {
+    excludeModalTab.value = tab;
+    excludeModalVisible.value = true;
+  }
+}
+
+function onSaveExclude(exclude: TabExcludeConfig) {
+  if (!excludeModalTab.value) return;
+  postMessage({
+    command: 'saveTabExclude',
+    tabId: excludeModalTab.value.id,
+    exclude
+  });
 }
 
 function onWindowMessage(event: MessageEvent) {
@@ -151,7 +173,19 @@ onUnmounted(() => {
       @show-context-menu="openContextMenu"
     />
 
-    <ContextMenu :menu-state="contextMenuState" @close="closeContextMenu" />
+    <ContextMenu
+      :menu-state="contextMenuState"
+      @close="closeContextMenu"
+      @open-exclude-modal="openExcludeModal"
+    />
+
+    <ExcludeModal
+      :visible="excludeModalVisible"
+      :bar-title="currentBar?.iconLabel || currentBar?.title || 'Explorer'"
+      :tab="excludeModalTab"
+      @close="excludeModalVisible = false"
+      @save="onSaveExclude"
+    />
   </div>
 </template>
 
