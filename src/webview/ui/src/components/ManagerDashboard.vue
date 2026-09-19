@@ -87,16 +87,16 @@ function onSave() {
   <div class="manager-container">
     <div class="manager-header">
       <div class="header-left">
-        <h2>Activity Bar Explorers</h2>
+        <h2>Containers Manager</h2>
         <div class="filter-toggle">
           <label class="checkbox-label">
             <input type="checkbox" v-model="filterByWorkspace" />
             <span class="checkbox-text">
-              Filter Activity Bar by current workspace
+              Filter containers by current workspace
             </span>
           </label>
           <div class="filter-hint">
-            When unchecked, all configured explorers are always visible regardless of open workspace.
+            When unchecked, all configured containers are always visible regardless of open workspace.
           </div>
         </div>
       </div>
@@ -111,7 +111,7 @@ function onSave() {
 
     <div class="slots-header-note">
       <span class="hint-svg-icon" v-html="ICONS.lightbulb"></span>
-      Activity Bar icons change only after reload.
+      Container icons change only after reload.
     </div>
 
     <div class="slots-list">

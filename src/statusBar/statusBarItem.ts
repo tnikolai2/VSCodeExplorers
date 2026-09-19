@@ -10,8 +10,8 @@ export class ExplorersStatusBarItem {
   ) {
     this._statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 10);
     this._statusBarItem.command = 'customExplorer.manage';
-    this._statusBarItem.text = '$(layers) Explorers';
-    this._statusBarItem.tooltip = 'Custom Explorers: Manage Activity Bars';
+    this._statusBarItem.text = '$(layers) Containers';
+    this._statusBarItem.tooltip = 'Custom Explorers: Manage Containers';
     this._statusBarItem.show();
 
     this.context.subscriptions.push(this._statusBarItem);
@@ -23,8 +23,8 @@ export class ExplorersStatusBarItem {
   private updateStatus(): void {
     const state = this.storageService.getState();
     const enabledCount = state.bars.filter(b => b.enabled).length;
-    this._statusBarItem.text = `$(layers) Explorers (${enabledCount})`;
-    this._statusBarItem.tooltip = `Custom Explorers: ${enabledCount} active Activity Bar(s). Click to manage.`;
+    this._statusBarItem.text = `$(layers) Containers (${enabledCount})`;
+    this._statusBarItem.tooltip = `Custom Explorers: ${enabledCount} active container(s). Click to manage.`;
   }
 }
 

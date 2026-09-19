@@ -169,7 +169,7 @@
     "commands": [
       {
         "command": "customExplorer.manage",
-        "title": "Manage Activity Bars",
+        "title": "Manage Containers",
         "category": "Custom Explorers",
         "icon": "$(layers)"
       },

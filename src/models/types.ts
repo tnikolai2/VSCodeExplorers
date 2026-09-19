@@ -33,7 +33,7 @@ export interface BarConfig {
 
 export interface CustomExplorersState {
   version: number;
-  filterByWorkspace?: boolean; // Whether to filter Activity Bar slots by current workspace
+  filterByWorkspace?: boolean; // Whether to filter containers by current workspace
   bars: BarConfig[];
 }
 

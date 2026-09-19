@@ -25,7 +25,7 @@ export class ManagerController {
 
     this._panel = vscode.window.createWebviewPanel(
       'customExplorersManager',
-      'Custom Explorers Manager',
+      'Containers Manager',
       vscode.ViewColumn.One,
       {
         enableScripts: true,
@@ -128,7 +128,7 @@ export class ManagerController {
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource} 'unsafe-inline'; script-src ${webview.cspSource} 'unsafe-inline'; font-src ${webview.cspSource};">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Custom Explorers Manager</title>
+  <title>Containers Manager</title>
   <link rel="stylesheet" href="${styleUri}">
 </head>
 <body>
